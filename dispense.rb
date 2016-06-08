@@ -9,6 +9,7 @@ ruby_version = [Pathname.new(File.absolute_path(__FILE__)).dirname , '.ruby-vers
 ruby_gemset  = [Pathname.new(File.absolute_path(__FILE__)).dirname , '.ruby-gemset'].join('/')
 work_folder  = File.absolute_path(Pathname.new('..'))
 gem_files    = [gemfile, gemfile_lock, ruby_version, ruby_gemset]
+skip_folders = ['global_utilities', 'rubyzoho']
 def link_gem_files(gem_files, entity)
   gem_files.each do |file|
     proposed_file = [entity , Pathname.new(file).basename].join('/')
@@ -19,7 +20,7 @@ def link_gem_files(gem_files, entity)
 end
 
 Dir.glob(work_folder + '/*').each do |entity|
-  if Pathname(entity).directory? && !Pathname(entity).to_s.include?('global_utilities')
+  if Pathname(entity).directory? && !Pathname(entity).to_s.include?(skip_folders)
     link_gem_files(gem_files, entity)
   end
 end

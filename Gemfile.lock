@@ -1,3 +1,14 @@
+GIT
+  remote: git@github.com:reedhein/rubyzoho.git
+  revision: dde81bf4436dc7e4e12d5e5308819a442cd303ef
+  specs:
+    rubyzoho (0.6.0)
+      activemodel (>= 3.0)
+      httmultiparty (>= 0.3)
+      mime-types (>= 2.6)
+      multipart-post (>= 1.0)
+      roxml (>= 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -42,6 +53,10 @@ GEM
       dm-validations (~> 1.2.0)
     data_objects (0.10.17)
       addressable (~> 2.1)
+    databasedotcom (1.3.5)
+      activesupport
+      json
+      multipart-post (~> 2.0.0)
     deepstruct (0.0.7)
     dm-aggregates (1.2.0)
       dm-core (~> 1.2.0)
@@ -125,15 +140,16 @@ GEM
     method_source (0.8.2)
     mime-types (2.99.2)
     mimemagic (0.3.1)
-    mini_portile2 (2.0.0)
+    mini_portile2 (2.1.0)
     minitest (5.9.0)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-http-digest_auth (1.4)
     net-http-persistent (2.9.4)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
     ntlm-http (0.1.1)
     oauth (0.5.1)
     oauth2 (1.1.0)
@@ -152,6 +168,7 @@ GEM
     omniauth-salesforce (1.0.5)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.0)
+    pkg-config (1.1.7)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -163,7 +180,7 @@ GEM
     rack-protection (1.5.3)
       rack
     rainbow (2.0.0)
-    restforce (2.2.0)
+    restforce (2.2.1)
       faraday (~> 0.9.0)
       faraday_middleware (>= 0.8.8)
       hashie (>= 1.2.0, < 4.0)
@@ -175,11 +192,6 @@ GEM
     ruby-growl (4.1)
       uuid (~> 2.3, >= 2.3.5)
     rubyzip (1.2.0)
-    rubyzoho (0.5.0)
-      activemodel (>= 3.0)
-      httmultiparty (>= 0.3)
-      multipart-post (>= 1.0)
-      roxml (>= 1.0)
     selenium-webdriver (2.53.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
@@ -192,7 +204,7 @@ GEM
     stringex (1.5.1)
     systemu (2.6.5)
     thread_safe (0.3.5)
-    tilt (2.0.4)
+    tilt (2.0.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -218,17 +230,20 @@ DEPENDENCIES
   boxr
   curb
   data_mapper
+  databasedotcom
   deepstruct
   dm-sqlite-adapter
   gmail
   haml
   mechanize
+  nokogiri
   omniauth-salesforce
   pry
   pry-byebug
   restforce
   ruby-growl
-  rubyzoho
+  rubyzoho!
+  selenium-webdriver
   sinatra
   watir
 

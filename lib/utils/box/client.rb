@@ -1,0 +1,47 @@
+module Utils
+  module Box
+    class Client
+      attr_reader :client
+      def initialize(user = DB::User.first)
+        @client = self.class.client(user)
+        #the below creates dynamic methods that passes methods to @client
+        @client.public_methods(false).each do |meth|
+          (class << self; self; end).class_eval do
+            define_method meth do |*args|
+              @client.send(meth, *args)
+            end
+          end
+        end
+      end
+
+      def folders
+        root_folder_items
+      end
+
+      def opportunities
+        folder("5665505677")
+      end
+
+      def cases
+        folder("5665821837")
+      end
+
+      def self.client(user = DB::User.first)
+        token_refesh_callback = lambda do |access, refresh, identifier| 
+          user.box_access_token  = access
+          user.box_refresh_token = refresh
+          user.box_identifier    = identifier
+          user.save
+        end
+        token = user.box_access_token || CredService.creds.box.token
+        Boxr::Client.new(token,
+            refresh_token:  user.box_refresh_token,
+            identifier:     user.box_identifier,
+            client_id:     CredService.creds.box.client_id,
+            client_secret: CredService.creds.box.client_secret,
+            &token_refesh_callback
+          )
+      end
+    end
+  end
+end

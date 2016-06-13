@@ -20,7 +20,7 @@ def link_gem_files(gem_files, entity)
 end
 
 Dir.glob(work_folder + '/*').each do |entity|
-  if Pathname(entity).directory? && !Pathname(entity).to_s.include?(skip_folders)
+  if Pathname(entity).directory? && !skip_folders.include?(Pathname(entity).to_s)
     link_gem_files(gem_files, entity)
   end
 end

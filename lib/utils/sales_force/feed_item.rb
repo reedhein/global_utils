@@ -39,7 +39,7 @@ module Utils
       end
 
       def self.migration_note_body(note)
-        _content = note.note_content 
+        _content = note.note_content
         _content << ' ::FROM ZOHO::' << " AUTHORED BY (#{note.created_by})"
       end
     end

@@ -54,7 +54,7 @@ module Utils
 
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
-          (class << self; self; end).class_eval do
+          self.instace_eval do
             define_method meth do |*args|
               @api_object.send(meth, *args)
             end

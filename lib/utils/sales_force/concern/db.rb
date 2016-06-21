@@ -29,6 +29,14 @@ module Utils
           @migration_complete = @storage_object.update(complete: true)
         end
 
+        def mark_unfinished
+          [:notes, :attachments].each do |task|
+            change = {}
+            change["#{task.to_s}_migration_complete".to_sym] = false
+            @storage_object.update(change)
+          end
+        end
+
         def notes_migration_complete?
           @storage_object.notes_migration_complete
         end

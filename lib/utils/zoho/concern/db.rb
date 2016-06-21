@@ -21,9 +21,10 @@ module Utils
           @migration_complete = @storage_object.update(complete: true)
         end
 
-          def find_or_create(api_object)
-            self.class.convert_api_object_to_local_storage(api_object)
-          end
+        def find_or_create(api_object)
+          self.class.convert_api_object_to_local_storage(api_object)
+        end
+
         module ClassMethods
 
 

@@ -10,8 +10,7 @@ module Utils
         def convert_api_object_to_local_storage(api_object)
           ::DB::SalesForceProgressRecord.first_or_create(
             sales_force_id: api_object.fetch('Id'),
-            object_type: api_object.fetch('attributes').fetch('type'),
-            created_date: DateTime.parse(api_object.fetch('CreatedDate'))
+            object_type: api_object.fetch('attributes').fetch('type')
           )
         end
 

@@ -22,6 +22,17 @@ module Utils
         folder("5665821837")
       end
 
+      def create_folders(desired_folder_names)
+        desired_folder_names.each_with_index do |folder, i|
+          parent_folder = desired_folder_names[0..i].join('/')
+          begin
+            @client.folder(parent_folder)
+          rescue Boxr::BoxError => e # the box folder could not be found
+            @client.create_folder(folder, parent_folder) if e.to_s =~ /Not Found/
+          end
+        end
+      end
+
       def self.client(user = DB::User.first)
         token_refesh_callback = lambda do |access, refresh, identifier| 
           user.box_access_token  = access
@@ -39,6 +50,7 @@ module Utils
             &token_refesh_callback
           )
       end
+
       private
 
       def dynanmic_methods_for_client

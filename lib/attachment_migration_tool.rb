@@ -1,22 +1,22 @@
 class AttachmentMigrationTool
   attr_accessor :meta
-  def initialize(zoho_sushi, sales_force_sushi, meta)
-    @meta              = meta
-    @zoho_sushi        = zoho_sushi
-    @sales_force_sushi = sales_force_sushi
+  def initialize(zoho, sf, meta)
+    @meta = meta
+    @zoho = zoho_sushi
+    @sf   = sf
   end
 
   def perform
-    attachments = @zoho_sushi.attachments
+    attachments = @zoho.attachments
     attachments.map do |attachment|
-      @sales_force_sushi.attach(@zoho_sushi, attachment)
+      @sf.attach(@zoho, attachment)
     end
-    updated_count = @meta.updated_count += 1
-    if @sales_force_sushi.modified?
+    @meta.updated_count += 1
+    if @sf.modified?
       @meta.updated_count += 1
       @meta.save
     end
-    @zoho_sushi.mark_completed
-    @sales_force_sushi.mark_completed
+    @zoho.mark_migration_complete(:attachment)
+    @sf.mark_migration_complete(:attachment)
   end
 end

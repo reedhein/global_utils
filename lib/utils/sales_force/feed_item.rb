@@ -9,16 +9,12 @@ module Utils
       end
 
       def self.create_from_zoho_note( note, sf )
-        user = Utils::SalesForce::User.record_from_full_name(note.created_by).first
-        binding.pry if sf.type == "Case"
         data = {
           CreatedDate: Utils::SalesForce.format_time_to_soql(note.created_time),
           Title: note.title,
           Body: migration_note_body(note),
           ParentId: sf.id,
-          CreatedBy: user.id
         }
-        data.delete(:CreatedBy) if user.nil? || true
         sf.client.create('FeedItem', data)
       end
 
@@ -39,7 +35,7 @@ module Utils
       end
 
       def self.migration_note_body(note)
-        _content = note.note_content
+        _content = note.note_content.clone
         _content << ' ::FROM ZOHO::' << " AUTHORED BY (#{note.created_by})"
       end
     end

@@ -42,7 +42,7 @@ module Utils
 
       def chatters
         @chatters ||= @client.custom_query(
-          query: "select id, createddate, type, body, title, parentid from feeditem where parentid = '#{id}'"
+          query: "select id, createddate, CreatedById, type, body, title, parentid from feeditem where parentid = '#{id}'"
         )
       end
     end

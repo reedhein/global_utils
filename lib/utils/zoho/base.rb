@@ -54,10 +54,8 @@ module Utils
 
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
-          self.instace_eval do
-            define_method meth do |*args|
-              @api_object.send(meth, *args)
-            end
+          define_singleton_method meth do |*args|
+            @api_object.send(meth, *args)
           end
         end
       end

@@ -1,4 +1,4 @@
-module GlobalUtilities
+module Utils
   module SalesForce
     class Determine
       attr_accessor :potentials, :contacts, :leads, :accounts, :email, :name, :phone, :sf_client, :sf_object
@@ -16,7 +16,7 @@ module GlobalUtilities
         return_value = corresponding_objects.flatten.compact.map do |zoho|
           begin
             module_name = zoho.module_name.singularize
-            ['GlobalUtilities', 'Zoho' , module_name].join('::').constantize.new(zoho)
+            ['Utils', 'Zoho' , module_name].join('::').constantize.new(zoho)
           rescue => e
             puts e
             binding.pry
@@ -61,7 +61,7 @@ module GlobalUtilities
       def populate_results(zoho_api_lookup)
         if zoho_api_lookup
           zoho_api_lookup.each do |zoho|
-            global_zoho = ['GlobalUtilities', 'Zoho', zoho.module_name.singularize].join('::').constantize.new(zoho)
+            global_zoho = ['Utils', 'Zoho', zoho.module_name.singularize].join('::').constantize.new(zoho)
             self.send(zoho.module_name.downcase) << global_zoho
           end
         end

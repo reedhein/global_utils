@@ -1,17 +1,13 @@
 module Utils
   module Box
     class Client
+      include Inspector
+      include Singleton
       attr_reader :client
       def initialize(user = DB::User.first)
         @client = self.class.client(user)
         #the below creates dynamic methods that passes methods to @client
-        @client.public_methods(false).each do |meth|
-          (class << self; self; end).class_eval do
-            define_method meth do |*args|
-              @client.send(meth, *args)
-            end
-          end
-        end
+        dynanmic_methods_for_client
       end
 
       def folders
@@ -32,15 +28,26 @@ module Utils
           user.box_refresh_token = refresh
           user.box_identifier    = identifier
           user.save
+          puts "Box Token updated: #{Time.now.to_s}"
         end
         token = user.box_access_token || CredService.creds.box.token
-        Boxr::Client.new(token,
+        ::Boxr::Client.new(token,
             refresh_token:  user.box_refresh_token,
             identifier:     user.box_identifier,
             client_id:     CredService.creds.box.client_id,
             client_secret: CredService.creds.box.client_secret,
             &token_refesh_callback
           )
+      end
+      private
+
+      def dynanmic_methods_for_client
+        methods = @client.public_methods - self.public_methods
+        methods.each do |meth|
+          define_singleton_method meth do |*args|
+            @client.send(meth, *args)
+          end
+        end
       end
     end
   end

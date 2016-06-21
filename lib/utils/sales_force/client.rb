@@ -37,9 +37,10 @@ module Utils
         Restforce.configure do |c|
           c.log_level = :info
         end
-        update_user_tokens = Proc.new do |reply|
+        update_user_tokens = lambda do |reply|
             user.salesforce_auth_token = reply.fetch('access_token')
             user.save
+            puts "Salesforce Token updated: #{Time.now.to_s}"
           end
 
         Restforce.new oauth_token: user.salesforce_auth_token,
@@ -67,10 +68,8 @@ module Utils
       def dynanmic_methods_for_client
         methods = @client.public_methods - self.public_methods
         methods.each do |meth|
-          (class << self; self; end).class_eval do
-            define_method meth do |*args|
-              @client.send(meth, *args)
-            end
+          define_singleton_method meth do |*args|
+            @client.send(meth, *args)
           end
         end
       end

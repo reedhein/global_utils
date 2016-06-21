@@ -26,6 +26,10 @@ module Utils
         end
       end
 
+      def delete
+        @client.destroy(type, id)
+      end
+
       def attachments
         @attachments ||= @client.custom_query("SELECT Id, Name FROM Attachment WHERE ParentId = '#{id}'")
       end

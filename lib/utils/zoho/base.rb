@@ -38,7 +38,7 @@ module Utils
       def dynamic_methods_for_related_objects
         %w(Accounts Contacts Quotes Events Leads Potentials Tasks Users Notes Attachments).each do |klass|
           define_singleton_method klass.downcase.to_sym do
-            sleep 5
+            sleep 2.5
             api_return_objects = RubyZoho.configuration.api.related_records(module_name, id, klass)
             return [] unless api_return_objects.present?
             api_return_objects.map do |aro|
@@ -56,7 +56,7 @@ module Utils
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
           define_singleton_method meth do |*args|
-            sleep 5
+            sleep 2.5
             @api_object.send(meth, *args)
           end
         end

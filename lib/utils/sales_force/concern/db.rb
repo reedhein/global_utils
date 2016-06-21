@@ -29,7 +29,7 @@ module Utils
         end
 
         def mark_unfinished
-          [:notes, :attachments].each do |task|
+          [:notes, :attachment].each do |task|
             change = {}
             change["#{task.to_s}_migration_complete".to_sym] = false
             @storage_object.update(change)

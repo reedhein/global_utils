@@ -2,11 +2,10 @@ source 'https://rubygems.org'
 gem 'pry'
 gem 'pry-byebug'
 gem 'restforce'
-# gem 'asciiart'
+gem 'asciiart', :platforms => :ruby
 gem 'ruby-growl'
 gem 'nokogiri'
 gem 'omniauth-salesforce'
-# gem 'rubyzoho', git: "https://github.com/reedhein/rubyzoho.git", branch: 'master'
 gem 'rubyzoho', git: "git@github.com:reedhein/rubyzoho.git"
 gem 'sinatra'
 gem 'haml'

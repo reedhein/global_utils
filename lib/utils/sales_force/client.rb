@@ -45,7 +45,7 @@ module Utils
 
         Restforce.new oauth_token: user.salesforce_auth_token,
           refresh_token: user.salesforce_refresh_token,
-          instance_url: CredService.creds.salesforce.instance_url,
+          instance_url: CredService.creds.salesforce.public_send(($environment.try(:to_sym) || :production)).instance_url,
           client_id:  CredService.creds.salesforce.api_key,
           client_secret:  CredService.creds.salesforce.api_secret,
           api_version:  CredService.creds.salesforce.api_version,

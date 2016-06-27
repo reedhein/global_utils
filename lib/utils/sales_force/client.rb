@@ -33,7 +33,7 @@ module Utils
       end
 
       def self.client(user = DB::User.first)
-        Restforce.log = false
+        Restforce.log = true
         Restforce.configure do |c|
           c.log_level = :info
         end
@@ -46,7 +46,7 @@ module Utils
         cred_environment = CredService.creds.salesforce.public_send(($environment.try(:to_sym) || :production))
         Restforce.new oauth_token: user.salesforce_auth_token,
           refresh_token: user.salesforce_refresh_token,
-          host: cred_environment.host
+          host: cred_environment.host,
           instance_url: cred_environment.instance_url,
           client_id:  cred_environment.api_key,
           client_secret:  cred_environment.api_secret,

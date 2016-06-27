@@ -18,6 +18,12 @@ module Utils
         sf.client.create('FeedItem', data)
       end
 
+      def case
+        @case ||= @client.custom_query(
+          query: "SELECT id, case_id_18__c, status, isClosed, exit_completed_date__C, closeddate, createddate, zoho_id__c FROM case WHERE id = '#{@parent_id}'"
+        ).first
+      end
+
       private
 
       def map_attributes(params) #override baseclass

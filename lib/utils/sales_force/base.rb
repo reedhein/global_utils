@@ -4,6 +4,7 @@ module Utils
       require_relative './concern'
       include Utils::SalesForce::Concern::DB #feels weird that this is required
       include Utils::SalesForce::Concern::Zoho
+      include Utils::SalesForce::Concern::Box
       # include Inspector
       attr_reader :client, :zoho, :api_object
       def initialize(api_object)

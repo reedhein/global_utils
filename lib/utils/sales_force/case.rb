@@ -3,7 +3,8 @@ module Utils
     class Case < Utils::SalesForce::Base
       attr_accessor :id, :zoho_id__c, :last_modified_by, :email, :name,  :record_type,
         :type, :url, :api_object, :migration_complete, :attachment_names, :modified,
-        :created_date, :closed_date, :contact_id, :created_by_id
+        :created_date, :closed_date, :contact_id, :created_by_id, :case_id_18__c, :status, :is_closed,
+        :exit_completed_date__c, :case_id__c
 
       def opportunity
         @opportunity ||= @client.custom_query(

@@ -2,6 +2,10 @@ require 'json'
 module Utils
   @@id_mapping = JSON.parse(File.open(File.join(File.dirname(__FILE__), 'id_json.json')).read)
 
+  class << self
+    attr_accessor :environment
+  end
+
   module Creds
     require_relative '../cred_service/cred_service'
   end

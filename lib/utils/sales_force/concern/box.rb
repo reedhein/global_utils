@@ -32,8 +32,9 @@ module Utils
           type        = self.type.pluralize
           id          = self.id
           home        = 'test' #XXX
-          desired_folders = [root, environtment, type, id, home]
-          @client.create_folders(desired_folders)
+          desired_folders = [root, environment, type, id, home]
+          home_folder = @client.create_folders(desired_folders)
+          @client.upload_file('proposed_file_path', home_folder)
         end
 
         def create_folder
@@ -45,12 +46,11 @@ module Utils
         end
 
         def create_linked(file)
-            @client.create('box__frup__c',
-              Body: Base64::encode64(file),
-              Description: "imported from zoho ID: #{zoho.id}",
-              Name: file_data[:file_name],
-              ParentId: id
-            )
+          @client.create('box__frup__c',
+            box__record_id__c: 'XXX',
+            box__object_name_c: 'XXX',
+            box__folder_id: 'xxx'
+          )
         end
 
         def file_already_present?(file_data)

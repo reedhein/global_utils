@@ -4,10 +4,9 @@ module Utils
       include Inspector
       include Singleton
       attr_reader :client
-      def initialize(user = DB::User.first)
+      def initialize(user = DB::User.Doug)
         @client = self.class.client(user)
-        #the below creates dynamic methods that passes methods to @client
-        dynanmic_methods_for_client
+        dynanmic_methods_for_client #dynamic methods that passes methods to @client
       end
 
       def folders
@@ -22,7 +21,7 @@ module Utils
         folder("5665821837")
       end
 
-      def create_folders(desired_folder_names)
+      def create_folders(desired_folder_names) #depricated in favor for SFDC trigger
         desired_folder_names.each_with_index do |folder, i|
           parent_folder = desired_folder_names[0..i].join('/')
           begin
@@ -33,7 +32,7 @@ module Utils
         end
       end
 
-      def self.client(user = DB::User.first)
+      def self.client(user = DB::User.Doug)
         token_refesh_callback = lambda do |access, refresh, identifier| 
           user.box_access_token  = access
           user.box_refresh_token = refresh

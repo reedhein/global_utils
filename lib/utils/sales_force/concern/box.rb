@@ -28,7 +28,7 @@ module Utils
 
         def create_relevant_folders
           root        = 'All Files'
-          environment = "Salesforce - ReedHein (#{Utils::Box.environment.capitalize})"
+          environment = "Salesforce - ReedHein (#{Utils.environment.capitalize})"
           type        = self.type.pluralize
           id          = self.id
           home        = 'test' #XXX

@@ -43,7 +43,7 @@ module Utils
             puts "Salesforce Token updated: #{Time.now.to_s}"
           end
 
-        cred_environment = CredService.creds.salesforce.public_send(($environment.try(:to_sym) || :production))
+        cred_environment = CredService.creds.salesforce.public_send((Utils.environment.try(:to_sym) || :production))
         Restforce.new oauth_token: user.salesforce_auth_token,
           refresh_token: user.salesforce_refresh_token,
           host: cred_environment.host,

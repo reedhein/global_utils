@@ -44,8 +44,15 @@ module Utils
           end
 
         cred_environment = CredService.creds.salesforce.public_send((Utils.environment.try(:to_sym) || :production))
-        Restforce.new oauth_token: user.salesforce_auth_token,
-          refresh_token: user.salesforce_refresh_token,
+        if Utils.environment == 'sandbox'
+          refresh_token = user.salesforce_sandbox_refresh_token
+          auth_token = user.salesforce_sandbox_auth_token
+        else
+          refresh_token = user.salesforce_refresh_token
+          auth_token = user.salesforce_auth_token
+        end
+        Restforce.new oauth_token: auth_token,
+          refresh_token: refresh_token,
           host: cred_environment.host,
           instance_url: cred_environment.instance_url,
           client_id:  cred_environment.api_key,

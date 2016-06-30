@@ -18,6 +18,7 @@ gem 'selenium-webdriver'
 gem 'databasedotcom'
 gem 'mechanize'
 gem 'boxr'
+gem 'awesome_print'
 
 
 gem 'thin'

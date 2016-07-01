@@ -8,7 +8,7 @@ module Utils
 
       def opportunity
         @opportunity ||= @client.custom_query(
-          query: "SELECT id, createddate, closeddate, zoho_id__c, FROM opportunity WHERE id in (select opportunityid from case where id = '#{@id}')"
+          query: "SELECT id, createddate, closedate, zoho_id__c FROM opportunity WHERE id in (select opportunity__c from case where id = '#{@id}')"
         ).first
       end
     end

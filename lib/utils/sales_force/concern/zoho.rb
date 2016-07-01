@@ -23,6 +23,7 @@ module Utils
         end
 
         def find_zoho
+          fail ArgumentError, "you forgot to query zoho_id__C" unless zoho_id__c
           @zoho ||= Utils::Zoho::Base.counterpart(zoho_id__c) || VirtualProxy.new { Utils::SalesForce::Determine.new(self).find_zoho }
         end
 

@@ -36,7 +36,8 @@ module Utils
           end
 
           def counterpart(id)
-            fail ArgumentError unless id
+            return nil unless id
+            return nil unless id =~ /^zcrm_/
             corresponding_class = nil
             %w[potential contact lead account].detect do |zoho_object|
               puts "checking against zoho object #{zoho_object}"
@@ -49,7 +50,7 @@ module Utils
                 retry
               end
             end
-            return nil if corresponding_class.nil? 
+            return nil if corresponding_class.nil?
             module_name = corresponding_class.first.module_name.singularize
             ['Utils', 'Zoho' , module_name].join('::').constantize.new(corresponding_class.first)
           end

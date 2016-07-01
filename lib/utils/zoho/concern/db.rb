@@ -35,25 +35,6 @@ module Utils
             )
           end
 
-          def counterpart(id)
-            return nil unless id
-            return nil unless id =~ /^zcrm_/
-            corresponding_class = nil
-            %w[potential contact lead account].detect do |zoho_object|
-              puts "checking against zoho object #{zoho_object}"
-              sleep 1
-              begin
-                corresponding_class = [RubyZoho::Crm, zoho_object.classify].join('::').constantize.find_by_id(zoho_id(id))
-              rescue Net::OpenTimeout
-                puts "network timeout sleeping 10 seconds then trying again"
-                sleep 10
-                retry
-              end
-            end
-            return nil if corresponding_class.nil?
-            module_name = corresponding_class.first.module_name.singularize
-            ['Utils', 'Zoho' , module_name].join('::').constantize.new(corresponding_class.first)
-          end
 
           def zoho_id(id)
             id.gsub('zcrm_', '')

@@ -8,7 +8,7 @@ module Utils
         :api_object, :migration_complete, :attachment_names, :modified, :created_date
       def contacts
         @contacts ||= @client.custom_query(
-          query: "select id, email, createddate from contact where accountid in (select accountid from opportunity where id = '#{id}')"
+          query: "select id, email, createddate, zoho_id__c from contact where accountid in (select accountid from opportunity where id = '#{id}')"
         )
       end
 

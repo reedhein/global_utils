@@ -16,6 +16,26 @@ module Utils
         self
       end
 
+      def self.counterpart(id)
+        return nil unless id
+        return nil unless id =~ /^zcrm_/
+        corresponding_class = nil
+        %w[lead potential contact account].detect do |zoho_object|
+          puts "checking against zoho object #{zoho_object}"
+          sleep 1
+          begin
+            corresponding_class = [RubyZoho::Crm, zoho_object.classify].join('::').constantize.find_by_id(zoho_id(id))
+          rescue Net::OpenTimeout
+            puts "network timeout sleeping 5 seconds then trying again"
+            sleep 5
+            retry
+          end
+        end
+        return nil if corresponding_class.nil?
+        module_name = corresponding_class.first.module_name.singularize
+        ['Utils', 'Zoho' , module_name].join('::').constantize.new(corresponding_class.first)
+      end
+
       private
 
       def munge_api(api_object)

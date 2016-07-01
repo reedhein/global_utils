@@ -13,8 +13,8 @@ module Utils
                                               ParentId: id)
             @modified = true
           rescue Errno::ETIMEDOUT
-            puts 'api timeout waiting 10 seconds and retrying'
-            sleep 10
+            puts 'api timeout waiting 5 seconds and retrying'
+            sleep 5
             retry
           rescue => e
             puts e
@@ -23,8 +23,7 @@ module Utils
         end
 
         def find_zoho
-          fail ArgumentError, "you forgot to query zoho_id__C" unless zoho_id__c
-          @zoho ||= Utils::Zoho::Base.counterpart(zoho_id__c) || VirtualProxy.new { Utils::SalesForce::Determine.new(self).find_zoho }
+          @zoho ||= Utils::Zoho::Base.counterpart(zoho_id__c)
         end
 
         private

@@ -32,7 +32,9 @@ module Utils
       end
 
       def attachments
-        @attachments ||= @client.custom_query("SELECT Id, Name FROM Attachment WHERE ParentId = '#{id}'")
+        @attachments ||= @client.custom_query(
+          query: "SELECT Id, Name FROM Attachment WHERE ParentId = '#{id}'"
+        )
       end
 
       def notes

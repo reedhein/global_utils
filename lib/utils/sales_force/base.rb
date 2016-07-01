@@ -49,7 +49,6 @@ module Utils
 
       def update(change_hash)
         change_hash.merge!(Id: self.id)
-        binding.pry
         @client.update(self.type, change_hash)
       end
     end

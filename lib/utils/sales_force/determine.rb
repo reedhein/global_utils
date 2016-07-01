@@ -7,13 +7,20 @@ module Utils
         @sf_client = sf.client
         @potentials, @contacts, @leads, @accounts = [], [], [], []
         @email, @name, @phone  = get_meta
-        find_zoho(sf)
-        self
       end
 
-      def find_zoho(sf)
-        corresponding_objects = fetch_zoho_objects(sf)
-        return_value = corresponding_objects.flatten.compact.map do |zoho|
+      def detect_zoho
+        %w[potential contact lead account].detect do |zoho_object|
+            zoho_object_fields(zoho_object).detect do |method_name| # i removed compact
+              zoho_api_lookup = ['RubyZoho' , 'Crm', zoho_object.camelize].join('::').constantize.send("find_by_#{method_name.to_s}", self.send(method_name))
+              populate_results(zoho_api_lookup)
+            end
+        end
+      end
+
+      def find_zoho
+        corresponding_objects = fetch_zoho_objects(@sf)
+        corresponding_objects.flatten.compact.each do |zoho|
           begin
             module_name = zoho.module_name.singularize
             ['Utils', 'Zoho' , module_name].join('::').constantize.new(zoho)
@@ -22,7 +29,7 @@ module Utils
             binding.pry
           end
         end.compact
-        return_value
+        self
       end
 
       private
@@ -31,7 +38,7 @@ module Utils
         %w[potential contact lead account].map do |zoho_object|
           puts "checking against zoho object: #{zoho_object}"
           begin
-            zoho_object_fields(zoho_object).compact.map do |method_name|
+            zoho_object_fields(zoho_object).each do |method_name| # i removed compact
               zoho_api_lookup = ['RubyZoho' , 'Crm', zoho_object.camelize].join('::').constantize.send("find_by_#{method_name.to_s}", self.send(method_name))
               populate_results(zoho_api_lookup)
             end
@@ -62,8 +69,11 @@ module Utils
         if zoho_api_lookup
           zoho_api_lookup.each do |zoho|
             global_zoho = ['Utils', 'Zoho', zoho.module_name.singularize].join('::').constantize.new(zoho)
-            self.send(zoho.module_name.downcase) << global_zoho
+            bucket_for_related_objects = self.send(zoho.module_name.downcase)
+            bucket_for_related_objects << global_zoho unless bucket_for_related_objects.map(&:id).include? global_zoho.id
           end
+        else
+          nil
         end
       end
 

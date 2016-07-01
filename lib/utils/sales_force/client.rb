@@ -28,10 +28,6 @@ module Utils
         end
       end
 
-      def self.custom_query(query: nil, &block)
-        self.instance.custom_query(query: query, &block)
-      end
-
       def self.client(user = DB::User.first)
         Restforce.log = true
         Restforce.configure do |c|

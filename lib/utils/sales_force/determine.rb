@@ -11,6 +11,15 @@ module Utils
         self
       end
 
+      def detect_zoho
+        %w[potential contact lead account].detect do |zoho_object|
+          zoho_object_fields(zoho_object).detect do |method_name| # i removed compact
+            zoho_api_lookup = ['RubyZoho' , 'Crm', zoho_object.camelize].join('::').constantize.send("find_by_#{method_name.to_s}", self.send(method_name))
+            populate_results(zoho_api_lookup)
+          end
+        end
+      end
+
       def find_zoho(sf)
         corresponding_objects = fetch_zoho_objects(sf)
         return_value = corresponding_objects.flatten.compact.map do |zoho|
@@ -28,7 +37,7 @@ module Utils
       private
 
       def fetch_zoho_objects(sf)
-        %w[potential contact lead account].map do |zoho_object|
+        %w[contact potential lead account].map do |zoho_object|
           puts "checking against zoho object: #{zoho_object}"
           begin
             zoho_object_fields(zoho_object).compact.map do |method_name|

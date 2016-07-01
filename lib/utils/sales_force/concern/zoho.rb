@@ -23,7 +23,7 @@ module Utils
         end
 
         def find_zoho
-          @zoho ||= Utils::Zoho::Base.counterpart(zoho_id__c) || VirtualProxy.new { Utils::SalesForce::Determine.new(self) }
+          @zoho ||= Utils::Zoho::Base.counterpart(zoho_id__c) || VirtualProxy.new { Utils::SalesForce::Determine.new(self).find_zoho }
         end
 
         private

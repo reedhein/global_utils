@@ -14,7 +14,6 @@ module Utils
 
       def custom_query(query: nil, &block)
         fail ArgumentError if query.nil?
-        tries ||= 0
         result = @client.query(query)
         return [] if result.count < 1
         object_type = result.first.dig('attributes', 'type')

@@ -16,6 +16,10 @@ module Utils
         self
       end
 
+      def self.client
+        RubyZoho.configuration.api
+      end
+
       def self.counterpart(id)
         return nil unless id
         return nil unless id =~ /^zcrm_/

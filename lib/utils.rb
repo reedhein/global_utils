@@ -1,9 +1,5 @@
-require_relative './inspector'
-require_relative './virtual_proxy'
-require_relative './worker_pool'
-require_relative './utils/zoho'
-require_relative './utils/box'
-require_relative './utils/sales_force'
+path = File.dirname(File.absolute_path(__FILE__) )
+Dir.glob(path + '/utils/*').delete_if{ |file| File.directory?(file) }.each{ |file| require file }
 module Utils
   class << self
     attr_accessor :environment

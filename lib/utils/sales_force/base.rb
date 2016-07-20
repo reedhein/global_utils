@@ -16,17 +16,6 @@ module Utils
         self
       end
 
-      def map_attributes(params)
-        params.each do |key, value|
-          next if key == "attributes"
-          next if key.downcase == "body" && params.dig('attributes', 'type') == 'Attachment'#prevent attachment from being downloaded if we haven't checked fro presence
-          self.send("#{key.underscore}=", value)
-        end
-        params.fetch('attributes').each do |key, value|
-          self.send("#{key.underscore}=", value)
-        end
-      end
-
       def delete
         @client.destroy(type, id)
       end
@@ -53,6 +42,20 @@ module Utils
         change_hash.merge!(Id: self.id)
         @client.update(self.type, change_hash)
       end
+
+      private
+
+      def map_attributes(params)
+        params.each do |key, value|
+          next if key == "attributes"
+          next if key.downcase == "body" && params.dig('attributes', 'type') == 'Attachment'#prevent attachment from being downloaded if we haven't checked fro presence
+          self.send("#{key.underscore}=", value)
+        end
+        params.fetch('attributes').each do |key, value|
+          self.send("#{key.underscore}=", value)
+        end
+      end
+
     end
 
   end

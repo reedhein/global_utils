@@ -1,4 +1,6 @@
 require 'json'
+require 'pry'
+require 'singleton'
 module Utils
   @@id_mapping = JSON.parse(File.open(File.join(File.dirname(__FILE__), 'id_json.json')).read)
 
@@ -13,20 +15,13 @@ module Utils
   require_relative '../db_share/db'
 
   module All
-    require_relative './lib/utils'
+    path = File.dirname(File.absolute_path(__FILE__) )
+    Dir.glob(path + '/lib/*').delete_if{|file| File.directory?(file) }.each{ |file| require file }
   end
 
   module Gmail
     require_relative '../gmail_tool/gmail_tool'
   end
-
-  # module SalesForce
-  #   require_relative './lib/global_utilities/sales_force'
-  # end
-  #
-  # module Zoho
-  #   require_relative './lib/global_utilities/zoho'
-  # end
 
   def self.id_mapping
     @@id_mapping

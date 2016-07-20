@@ -14,5 +14,9 @@ module Utils
       end
       _time.strftime("%Y-%m-%dT%H:%M:%S%z").insert(-3, ':')
     end
+
+    def self.soql_time_to_datetime(time)
+      DateTime.parse(time.gsub("T", ' ').gsub(/\.\d+(?:\+|-)\d+/,' '))
+    end
   end
 end

@@ -8,6 +8,7 @@ module Utils
         end
 
         def convert_api_object_to_local_storage(api_object)
+          fail 'SOQL query needs Id' unless api_object['Id']
           ::DB::SalesForceProgressRecord.first_or_create(
             sales_force_id: api_object.fetch('Id'),
             object_type: api_object.fetch('attributes').fetch('type')

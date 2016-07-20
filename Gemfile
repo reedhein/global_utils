@@ -19,6 +19,6 @@ gem 'databasedotcom'
 gem 'mechanize'
 gem 'boxr'
 gem 'awesome_print'
-
+gem 'pdf-reader'
 
 gem 'thin'

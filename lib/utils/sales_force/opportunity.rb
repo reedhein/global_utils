@@ -5,7 +5,7 @@ module Utils
       attr_accessor :id, :zoho_id__c, :account, :amount, :close_date, :contract, :description, :expected_revenue, :forcase_category_name,
         :last_modified_by, :lead_source, :next_step, :name, :owner, :record_type, :partner_account, :pricebook_2,
         :campain, :is_private, :probability, :total_opportunity_quality, :stage_name, :synced_quote, :type, :url,
-        :api_object, :migration_complete, :attachment_names, :modified, :created_date
+        :api_object, :migration_complete, :attachment_names, :modified, :created_date, :attachments
       def contacts
         @contacts ||= @client.custom_query(
           query: "select id, email, createddate, zoho_id__c from contact where accountid in (select accountid from opportunity where id = '#{id}')"

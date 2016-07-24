@@ -1,6 +1,7 @@
 module Utils
   module SalesForce
     class Determine
+      include Utils
       attr_accessor :potentials, :contacts, :leads, :accounts, :email, :name, :phone, :sf_client, :sf_object
       def initialize(sf)
         @sf_object = sf
@@ -21,26 +22,41 @@ module Utils
       end
 
       def find_zoho
-        fetch_zoho_objects(@sf)
+        fetch_zoho_objects(@sf_object)
+        self
       end
 
       private
 
       def fetch_zoho_objects(sf)
-        %w[contact potential lead account].each do |zoho_object|
-          puts "checking against zoho object: #{zoho_object}"
+        %w[lead account contact potential].each do |zoho_object|
+          puts "checking API against zoho object: #{zoho_object}"
+          sleep 9
           begin
-            zoho_object_fields(zoho_object).each do |method_name| # i removed compact
-              zoho_api_lookup_results = ['RubyZoho' , 'Crm', zoho_object.camelize].join('::').constantize.send("find_by_#{method_name.to_s}", self.send(method_name)) || []
-              binding.pry if !zoho_api_lookup_results.is_a? Array
+            zoho_object_fields(zoho_object).compact.each do |method_name|
+              sleep 9
+              search_value = self.send(method_name)
+              next if search_value.nil?
+              puts "searching #{method_name} on #{zoho_object}"
+              zoho_api_lookup_results = ['RubyZoho' , 'Crm', zoho_object.camelize].join('::').constantize.send("find_by_#{method_name.to_s}", search_value) || []
               [zoho_api_lookup_results].flatten.each do |result|
+                puts "found #{result}"
                 populate_results(result)
+                return self
               end
             end
           rescue Net::OpenTimeout
             puts "network timeout sleeping 5 seconds then trying again"
             sleep 5
             retry
+          rescue => e
+            if e.to_s =~ /4820/
+              hold_process until past_midnight? || fifteen_minute_interlude?
+              retry
+            end
+          rescue => e
+            ap e.backtrace
+            binding.pry
           end
         end
         self

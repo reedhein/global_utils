@@ -14,10 +14,15 @@ module Utils
 
       def custom_query(query: nil, &block)
         fail ArgumentError if query.nil?
-        result = @client.query(query)
+        begin
+          result = @client.query(query)
+        rescue => e
+          ap e.backtrace
+          binding.pry
+        end
         return [] if result.count < 1
         object_type = result.first.dig('attributes', 'type')
-        klass = ['Utils', 'SalesForce', object_type.camelize].join('::').classify.constantize
+        klass = create_klass(object_type)
         result.entries.map do |entity|
           if block_given?
             yield klass.new(entity)
@@ -69,6 +74,9 @@ module Utils
 
       private
 
+      def create_klass(object_type)
+        ['Utils', 'SalesForce', object_type.camelize].join('::').classify.constantize
+      end
       def dynanmic_methods_for_client
         methods = @client.public_methods - self.public_methods
         methods.each do |meth|

@@ -5,22 +5,47 @@ module Utils
       attr_accessor :id, :zoho_id__c, :account, :amount, :close_date, :contract, :description, :expected_revenue, :forcase_category_name,
         :last_modified_by, :lead_source, :next_step, :name, :owner, :record_type, :partner_account, :pricebook_2,
         :campain, :is_private, :probability, :total_opportunity_quality, :stage_name, :synced_quote, :type, :url,
-        :api_object, :migration_complete, :attachment_names, :modified, :created_date, :attachments
+        :api_object, :migration_complete, :attachment_names, :modified, :created_date, :notes, :attachments, :chatters
       def contacts
+        query = <<-EOF
+          SELECT id, email, createddate, zoho_id__c,
+          (SELECT id, createddate, body, title from notes),
+          (SELECT id, Name FROM Attachments),
+          (SELECT id, createddate, CreatedById, type, body, title FROM feeds)
+          FROM contact
+          WHERE accountid
+          IN (SELECT accountid FROM opportunity WHERE id = '#{id}')
+        EOF
         @contacts ||= @client.custom_query(
-          query: "select id, email, createddate, zoho_id__c from contact where accountid in (select accountid from opportunity where id = '#{id}')"
+          query: query
         )
       end
 
       def account
+        query = <<-EOF
+          SELECT id, createddate, zoho_id__c,
+          (SELECT id, createddate, body, title from notes),
+          (SELECT id, Name FROM Attachments),
+          (SELECT id, createddate, CreatedById, type, body, title FROM feeds)
+          FROM account
+          WHERE id
+          IN (SELECT accountid FROM opportunity WHERE id = '#{id}')
+        EOF
         @account ||= @client.custom_query(
-          query: "select id, createddate, zoho_id__c from account where id in (select accountid from opportunity where id = '#{id}')"
+          query: query
         ).first
       end
 
       def cases
+        query = <<-EOF
+        SELECT id, createddate, closeddate, zoho_id__c, createdbyid, contactid,
+        (SELECT id, Name FROM Attachments),
+        (SELECT id, createddate, CreatedById, type, body, title FROM feeds)
+        FROM case
+        WHERE opportunity__c = '#{id}'
+        EOF
         @cases ||= @client.custom_query(
-          query: "SELECT id, createddate, closeddate, zoho_id__c, createdbyid, contactid FROM case WHERE opportunity__c = '#{id}'"
+          query: query
         )
       end
 

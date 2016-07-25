@@ -5,6 +5,7 @@ module Utils
       path = File.dirname(File.absolute_path(__FILE__) )
       Dir.glob(path + '/**/*').delete_if{ |file| File.directory?(file) }.reverse.each{|file| require file}
       include Utils::Zoho::Concern::DB
+      include Utils
       attr_accessor :saleforce, :api_object, :storage_object, :migration_complete, :module_name, :id
       def initialize(api_object, salesforce_client = nil)
         @api_object         = munge_api(api_object)
@@ -24,8 +25,8 @@ module Utils
         return nil unless id
         return nil unless id =~ /^zcrm_/
         corresponding_class = nil
-        %w[lead potential contact account].detect do |zoho_object|
-          puts "checking against zoho object #{zoho_object}"
+        ['lead', 'account', 'potential', 'contact'].detect do |zoho_object|
+          puts "Checking against zoho object #{zoho_object}"
           sleep 1
           begin
             corresponding_class = [RubyZoho::Crm, zoho_object.classify].join('::').constantize.find_by_id(zoho_id(id))
@@ -33,7 +34,13 @@ module Utils
             puts "network timeout sleeping 5 seconds then trying again"
             sleep 5
             retry
+          rescue => e
+            if e.to_s =~ /4820/
+              hold_process until past_midnight?
+              retry
+            end
           end
+          corresponding_class
         end
         return nil if corresponding_class.nil?
         module_name = corresponding_class.first.module_name.singularize
@@ -62,7 +69,6 @@ module Utils
       def dynamic_methods_for_related_objects
         %w(Accounts Contacts Quotes Events Leads Potentials Tasks Users Notes Attachments).each do |klass|
           define_singleton_method klass.downcase.to_sym do
-            sleep 2.5
             api_return_objects = RubyZoho.configuration.api.related_records(module_name, id, klass)
             return [] unless api_return_objects.present?
             api_return_objects.map do |aro|
@@ -80,7 +86,7 @@ module Utils
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
           define_singleton_method meth do |*args|
-            sleep 2.5
+            sleep 11
             @api_object.send(meth, *args)
           end
         end

@@ -1,18 +1,20 @@
 require 'watir'
-
 class BrowserTool
-  attr_accessor :worker_pool, :agents
+  attr_accessor :worker_pool, :agents, :instance_url
   def initialize(number_of_browsers = 4)
     Utils.environment = :production
     @sf_login      = CredService.creds.salesforce.public_send(Utils.environment).host
     @sf_username   = CredService.creds.user.salesforce.public_send(Utils.environment).username
     @sf_password   = CredService.creds.user.salesforce.public_send(Utils.environment).password
-    @agents = []
+    @instance_url  = CredService.creds.salesforce.public_send(Utils.environment).instance_url
+    @agents        = []
     @worker_pool = @wp = WorkerPool.instance
     number_of_browsers.times do |i|
       self.instance_variable_set("@agent#{i}".to_sym, Watir::Browser.new(:chrome))
       agent = self.instance_variable_get("@agent#{i}".to_sym)
       @agents << agent
+      agent.driver.manage.timeouts.implicit_wait = 30
+      agent.driver.manage.timeouts.page_load = 30
       @screen_width  ||= agent.execute_script('return screen.width;')
       @screen_height ||= agent.execute_script('return screen.height;')
       setup_in_quadrant(agent, i)
@@ -32,12 +34,18 @@ class BrowserTool
 
   def create_folder(opportunity)
     queue_work do |agent|
-      agent.goto opporutnity_url(opportunity.id)
-      agent.span(class: 'title', text: 'Details').wait_until_present.click
-      Watir::Wait.until{ agent.frame(id: 'vfFrameId').wait_until_present }
-      box_iframe = agent.frame(id: 'vfFrameId').wait_until_present.frame(id: /j_id\d+/)
-      binding.pry
-      box_iframe.input(type: 'submit', value: 'Create Folder')
+      begin
+        agent.goto opportunity_url(opportunity)
+        agent.span(class: 'title', text: 'Details').when_present.click
+        Watir::Wait.until{ agent.iframe(id: 'vfFrameId').wait_until_present(timeout = 30) }
+        box_iframe = agent.iframe(id: 'vfFrameId').when_present.iframe(id: /j_id\d+/)
+        box_iframe.input(type: 'submit', value: 'Create Folder').when_present.click
+        sleep 4
+        box_iframe.div(id: 'error-page').exists?
+      rescue => e
+        ap e.backtrace
+        binding.pry
+      end
     end
   end
 

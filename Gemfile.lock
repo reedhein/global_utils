@@ -33,6 +33,8 @@ GEM
       jwt (~> 1.4)
       oj (~> 2.11)
     byebug (9.0.5)
+    call-me (0.0.2.3)
+      refining
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.1)
@@ -101,11 +103,16 @@ GEM
       faraday (>= 0.7.4, < 0.10)
     fastercsv (1.5.5)
     ffi (1.9.14)
+    ffi-extra (0.1.0)
+      ffi
+    ffi-inline (0.0.4.3)
+      ffi (>= 0.4.0)
     gmail (0.6.0)
       gmail_xoauth (>= 0.3.0)
       mail (>= 2.2.1)
     gmail_xoauth (0.4.1)
       oauth (>= 0.3.6)
+    grim (1.3.0)
     haml (4.0.7)
       tilt
     hashery (2.1.2)
@@ -121,6 +128,7 @@ GEM
       multi_xml (>= 0.5.2)
     httpclient (2.8.0)
     i18n (0.7.0)
+    iso-639 (0.2.8)
     json (1.8.3)
     json_pure (1.8.3)
     jwt (1.5.4)
@@ -185,11 +193,13 @@ GEM
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
+    refining (0.0.5.5)
     restforce (2.3.0)
       faraday (~> 0.9.0)
       faraday_middleware (>= 0.8.8)
       hashie (>= 1.2.0, < 4.0)
       json (>= 1.7.5, < 1.9.0)
+    rmagick (2.15.4)
     roxml (3.3.1)
       activesupport (>= 2.3.0)
       nokogiri (>= 1.3.3)
@@ -208,6 +218,11 @@ GEM
     slop (3.6.0)
     stringex (1.5.1)
     systemu (2.6.5)
+    tesseract-ocr (0.1.8)
+      call-me
+      ffi-extra
+      ffi-inline
+      iso-639
     thin (1.7.0)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -243,6 +258,7 @@ DEPENDENCIES
   deepstruct
   dm-sqlite-adapter
   gmail
+  grim
   haml
   mechanize
   nokogiri
@@ -251,10 +267,12 @@ DEPENDENCIES
   pry
   pry-byebug
   restforce
+  rmagick
   ruby-growl
   rubyzoho!
   selenium-webdriver
   sinatra
+  tesseract-ocr
   thin
   watir
 

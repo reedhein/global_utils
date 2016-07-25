@@ -3,6 +3,7 @@ Dir.glob(path + '/utils/*').delete_if{ |file| File.directory?(file) }.each{ |fil
 module Utils
   class << self
     attr_accessor :environment
+    attr_accessor :limiter
   end
 
   def past_midnight?

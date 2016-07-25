@@ -27,12 +27,12 @@ module Utils
         corresponding_class = nil
         ['lead', 'account', 'potential', 'contact'].detect do |zoho_object|
           puts "Checking against zoho object #{zoho_object}"
-          sleep 1
+          sleep 1 * Utils.limiter || 1
           begin
             corresponding_class = [RubyZoho::Crm, zoho_object.classify].join('::').constantize.find_by_id(zoho_id(id))
           rescue Net::OpenTimeout
             puts "network timeout sleeping 5 seconds then trying again"
-            sleep 5
+            sleep 5 * Utils.limiter || 1
             retry
           rescue => e
             if e.to_s =~ /4820/
@@ -86,7 +86,7 @@ module Utils
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
           define_singleton_method meth do |*args|
-            sleep 11
+            sleep 11 * Utils.limiter || 1
             @api_object.send(meth, *args)
           end
         end

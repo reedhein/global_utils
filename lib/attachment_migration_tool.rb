@@ -1,4 +1,4 @@
-class AttachmentMigrationTool
+class DerpAttachmentMigrationTool
   attr_accessor :meta
   def initialize(zoho, sf, meta)
     @meta = meta

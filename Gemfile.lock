@@ -37,6 +37,8 @@ GEM
       refining
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
+    classifier-reborn (2.0.4)
+      fast-stemmer (~> 1.0)
     coderay (1.1.1)
     commonwatir (4.0.0)
     concurrent-ruby (1.0.2)
@@ -58,6 +60,8 @@ GEM
       json
       multipart-post (~> 2.0.0)
     deepstruct (0.0.7)
+    dhash (0.0.2)
+      rmagick
     dm-aggregates (1.2.0)
       dm-core (~> 1.2.0)
     dm-constraints (1.2.0)
@@ -101,6 +105,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.10.0)
       faraday (>= 0.7.4, < 0.10)
+    fast-stemmer (1.0.2)
     fastercsv (1.5.5)
     ffi (1.9.14)
     ffi-extra (0.1.0)
@@ -123,8 +128,7 @@ GEM
       multipart-post
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    httparty (0.13.7)
-      json (~> 1.8)
+    httparty (0.14.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.0)
     i18n (0.7.0)
@@ -253,9 +257,11 @@ DEPENDENCIES
   activesupport
   awesome_print
   boxr
+  classifier-reborn
   data_mapper
   databasedotcom
   deepstruct
+  dhash
   dm-sqlite-adapter
   gmail
   grim

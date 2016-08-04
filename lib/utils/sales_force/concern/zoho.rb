@@ -6,6 +6,7 @@ module Utils
           # description = description_from_file_data(file_data)
           begin
             file = Utils::Zoho::Base.client.download_file(zoho_sushi.module_name, file_data.id)
+            binding.pry
             Utils::SalesForce::Client.instance.create('Attachment',
                                               Body: Base64::encode64(file),
                                               Description: "imported from zoho ID: #{zoho_sushi.id}",

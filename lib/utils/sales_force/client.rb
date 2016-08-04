@@ -7,7 +7,7 @@ module Utils
       include Singleton
       attr_reader :client
 
-      def initialize(user = DB::User.first)
+      def initialize(user = DB::User.Doug)
         @client = self.class.client(user)
         dynanmic_methods_for_client
       end
@@ -32,7 +32,7 @@ module Utils
         end
       end
 
-      def self.client(user = DB::User.first)
+      def self.client(user = DB::User.Doug)
         Restforce.log = true
         Restforce.configure do |c|
           c.log_level = :info

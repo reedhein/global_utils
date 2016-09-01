@@ -42,6 +42,10 @@ module Utils
         @client.update(self.type, change_hash)
       end
 
+      def migration_complete?(task) #attachment or notes
+        @storage_object.send(task.to_s + '_migration_complete')
+      end
+
       private
 
       def map_attributes(params)

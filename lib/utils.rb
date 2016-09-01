@@ -8,7 +8,7 @@ module Utils
   end
 
   def past_midnight?
-    @tomorrow = Date.tomorrow.beginning_of_day
+    @tomorrow ||= Date.tomorrow.beginning_of_day
     Time.now.to_i > @tomorrow.to_i
   end
 
@@ -31,6 +31,7 @@ module Utils
   end
 
   def hold_process
+    @tomorrow ||= Date.tomorrow.beginning_of_day
     seconds_left = @tomorrow.to_i - Time.now.to_i
     puts "#{seconds_left} seconds until zoho api limits reset"
     sleep 60

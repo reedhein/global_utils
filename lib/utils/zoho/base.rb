@@ -47,6 +47,10 @@ module Utils
         ['Utils', 'Zoho' , module_name].join('::').constantize.new(corresponding_class.first)
       end
 
+      def migration_complete?(task) #attachment or notes
+        @storage_object.send(task.to_s + '_migration_complete')
+      end
+
       private
 
       def munge_api(api_object)
@@ -86,7 +90,7 @@ module Utils
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
           define_singleton_method meth do |*args|
-            sleep 11 * Utils.limiter || 1
+            sleep 6 * Utils.limiter || 1
             @api_object.send(meth, *args)
           end
         end

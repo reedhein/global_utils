@@ -1,7 +1,8 @@
 require 'watir'
 class BrowserTool
   attr_accessor :worker_pool, :agents, :instance_url
-  def initialize(number_of_browsers = 4)
+  def initialize(number_of_browsers = 1)
+    @lightning     = false
     Utils.environment = :production
     @sf_login      = CredService.creds.salesforce.public_send(Utils.environment).host
     @sf_username   = CredService.creds.user.salesforce.public_send(Utils.environment).username
@@ -18,7 +19,7 @@ class BrowserTool
       @screen_width  ||= agent.execute_script('return screen.width;')
       @screen_height ||= agent.execute_script('return screen.height;')
       setup_in_quadrant(agent, i)
-      Thread.new{ log_in_to_salesforce(agent) }
+      log_in_to_salesforce(agent)
     end
   end
 
@@ -32,16 +33,26 @@ class BrowserTool
     agent.unlock
   end
 
-  def create_folder(opportunity)
+  def create_folder(sobject)
+    lightning = false
     queue_work do |agent|
       begin
-        agent.goto opportunity_url(opportunity)
-        agent.span(class: 'title', text: 'Details').when_present.click
-        Watir::Wait.until{ agent.iframe(id: 'vfFrameId').wait_until_present(timeout = 30) }
-        box_iframe = agent.iframe(id: 'vfFrameId').when_present.iframe(id: /j_id\d+/)
-        box_iframe.input(type: 'submit', value: 'Create Folder').when_present.click
-        sleep 4
-        box_iframe.div(id: 'error-page').exists?
+        puts sobject_url(sobject)
+        agent.goto sobject_url(sobject)
+        sleep 1
+        Watir::Wait.until{agent.div(id: 'contentWrapper').present?}
+        if @lightning
+          agent.span(class: 'title', text: 'Details').when_present.click
+          Watir::Wait.until{ agent.iframe(id: 'vfFrameId').wait_until_present(timeout = 30) }
+          box_iframe = agent.iframe(id: 'vfFrameId').when_present.iframe(id: /j_id\d+/)
+          box_iframe.input(type: 'submit', value: 'Create Folder').when_present.click
+          sleep 4
+          box_iframe.div(id: 'error-page').exists?
+        else
+          # box_iframe = agent.iframe(title: "CaseBoxSection").when_present
+          iframes = agent.iframes
+          iframes[2].iframe.form.input(type: 'submit', value: 'Create Folder').when_present.click
+        end
       rescue => e
         ap e.backtrace
         binding.pry
@@ -58,7 +69,7 @@ class BrowserTool
 
   private
 
-  def opportunity_url(opp)
+  def sobject_url(opp)
     [@instance_url, opp.id].join('/')
   end
 
@@ -67,7 +78,11 @@ class BrowserTool
     agent.text_field(id: 'username').when_present.set @sf_username
     agent.text_field(id: 'password').set @sf_password
     agent.button(name: 'Login').click
-    Watir::Wait.until { agent.body(class: 'desktop').wait_until_present }
+    if @lightning
+      Watir::Wait.until { agent.body(class: 'desktop').wait_until_present }
+    else
+      Watir::Wait.until { agent.div(id: 'contentWrapper').wait_until_present }
+    end
   end
 
   def setup_in_quadrant(agent, quadrant)

@@ -23,7 +23,7 @@ module Utils
 
       def account
         query = <<-EOF
-          SELECT id, createddate, zoho_id__c,
+          SELECT id, createddate, zoho_id__c, subject,
           (SELECT id, createddate, body, title from notes),
           (SELECT id, Name FROM Attachments),
           (SELECT id, createddate, CreatedById, type, body, title FROM feeds)
@@ -47,6 +47,10 @@ module Utils
         @cases ||= @client.custom_query(
           query: query
         )
+      end
+
+      def cases=(cases)
+        @cases = cases
       end
 
     end

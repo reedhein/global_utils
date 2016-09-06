@@ -33,7 +33,7 @@ module Utils
       end
 
       def self.client(user = DB::User.Doug)
-        Restforce.log = false
+        Restforce.log = true
         Restforce.configure do |c|
           c.log_level = :info
         end

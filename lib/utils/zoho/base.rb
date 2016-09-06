@@ -90,7 +90,7 @@ module Utils
       def dyanmic_methods_for_passing_to_api_object
         @api_object.fields.each do |meth|
           define_singleton_method meth do |*args|
-            sleep 6 * Utils.limiter || 1
+            sleep 1 * Utils.limiter || 1
             @api_object.send(meth, *args)
           end
         end

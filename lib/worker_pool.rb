@@ -51,14 +51,8 @@ class WorkerPool
 private
 
   def wait_for_tasks
-    # start_time = Time.now
-
     while @tasks.length == 0 do
       sleep WAIT_TIMEOUT
-      # wait for tasks to arrive, break if WAIT_TIMEOUT has been reached
-      # if Time.now - start_time >= WAIT_TIMEOUT
-      #   break
-      # end
     end
     puts 'breaking out'
   end

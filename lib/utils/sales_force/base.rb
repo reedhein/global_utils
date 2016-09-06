@@ -52,14 +52,16 @@ module Utils
         params.each do |key, value|
           next if key == "attributes"
           next if key.downcase == "body" && params.dig('attributes', 'type') == 'Attachment'#prevent attachment from being downloaded if we haven't checked fro presence
-          case key.underscore
-          when 'notes' , 'attachments'
-            self.instance_variable_set(key.underscore.prepend('@').to_sym, wrap_sub_query_values(key, value))
-          when 'feeds'
-            self.instance_variable_set(:@chatters, wrap_sub_query_values(key, value))
-          else
-            self.send("#{key.underscore}=", value)
+          if key =~/__r$/ 
+            key = key.gsub(/__r$/, '')
+            if !value.nil? && value.respond_to?(:entries)
+              value = value.entries.map do |entity|
+                klass = ['Utils', 'SalesForce', entity.attributes.type].join('::').classify.constantize
+                klass.new(entity)
+              end
+            end
           end
+          self.send("#{key.underscore}=", value)
         end
         params.fetch('attributes').each do |key, value|
           self.send("#{key.underscore}=", value)
@@ -74,13 +76,8 @@ module Utils
         else
           klass = ['Utils', 'SalesForce', key.camelize].join('::').classify.constantize
         end
-        begin
-          return_value.map do |entity|
-            klass.new(entity)
-          end
-        rescue => e
-          ap e
-          binding.pry
+        return_value.entries.map do |entity|
+          klass.new(entity)
         end
       end
     end

@@ -25,7 +25,7 @@ module Utils
         return nil unless id
         return nil unless id =~ /^zcrm_/
         corresponding_class = nil
-        ['lead', 'contact', 'account', 'potential'].detect do |zoho_object|
+        ['contact', 'lead', 'account', 'potential'].detect do |zoho_object|
           puts "Checking against zoho object #{zoho_object}"
           sleep 1 * Utils.limiter || 1
           begin

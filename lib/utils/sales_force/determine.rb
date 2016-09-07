@@ -31,10 +31,10 @@ module Utils
       def fetch_zoho_objects(sf)
         %w[lead account contact potential].each do |zoho_object|
           puts "checking API against zoho object: #{zoho_object}"
-          sleep 9
+          sleep 1 * (Utils.limiter || 1)
           begin
             zoho_object_fields(zoho_object).compact.each do |method_name|
-              sleep 9
+              sleep 1 * (Utils.limiter || 1)
               search_value = self.send(method_name)
               next if search_value.nil?
               puts "searching #{method_name} on #{zoho_object}"
@@ -51,7 +51,7 @@ module Utils
             retry
           rescue => e
             if e.to_s =~ /4820/
-              hold_process until past_midnight? || fifteen_minute_interlude?
+              hold_process until past_midnight?
               retry
             end
           rescue => e

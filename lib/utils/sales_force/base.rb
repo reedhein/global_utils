@@ -46,6 +46,11 @@ module Utils
         @storage_object.send(task.to_s + '_migration_complete')
       end
 
+      def mark_completed(task)
+        @storage_object.send(task.to_s + '_migration_complete=', true)
+        @storage_object.save
+      end
+
       private
 
       def map_attributes(params)

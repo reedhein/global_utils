@@ -11,7 +11,7 @@ class BrowserTool
     @agents        = []
     @worker_pool = @wp = WorkerPool.instance
     number_of_browsers.times do |i|
-      self.instance_variable_set("@agent#{i}".to_sym, Watir::Browser.new(:firefox))
+      self.instance_variable_set("@agent#{i}".to_sym, Watir::Browser.new(:chrome))
       agent = self.instance_variable_get("@agent#{i}".to_sym)
       @agents << agent
       agent.driver.manage.timeouts.implicit_wait = 30
@@ -50,8 +50,19 @@ class BrowserTool
           box_iframe.div(id: 'error-page').exists?
         else
           # box_iframe = agent.iframe(title: "CaseBoxSection").when_present
-          iframes = agent.iframes
-          iframes[2].iframe.form.input(type: 'submit', value: 'Create Folder').when_present.click
+          if sobject.type == 'Opportunity'
+            begin
+              # section_of_box = agent.iframe(name: 'OpportunityBoxSection')
+              frames = agent.iframes
+              frames[3].when_present.iframe.input(type: 'submit', value: 'Create Folder').when_present.click
+            rescue => e
+              ap e.backtrace
+              binding.pry
+            end
+          else
+            iframes = agent.iframes
+            iframes[2].iframe.form.input(type: 'submit', value: 'Create Folder').when_present.click
+          end
         end
       rescue => e
         ap e.backtrace

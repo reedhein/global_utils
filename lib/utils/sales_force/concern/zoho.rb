@@ -27,7 +27,7 @@ module Utils
         end
 
         def find_zoho
-          @zoho ||= Utils::Zoho::Base.counterpart(zoho_id__c)
+          @zoho ||= Utils::Zoho::Base.counterpart(self)
         end
 
         private

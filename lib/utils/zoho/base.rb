@@ -21,11 +21,12 @@ module Utils
         RubyZoho.configuration.api
       end
 
-      def self.counterpart(id)
+      def self.counterpart(sf) #presumes confidence in zoho_id__c
+        id = sf.zoho_id__c
         return nil unless id
         return nil unless id =~ /^zcrm_/
         corresponding_class = nil
-        ['contact', 'lead', 'account', 'potential'].detect do |zoho_object|
+        [ 'potential', 'contact', 'lead', 'account'].detect do |zoho_object|
           puts "Checking against zoho object #{zoho_object}"
           sleep 1 * Utils.limiter || 1
           begin

@@ -7,7 +7,7 @@ module Utils
           begin
             file = Utils::Zoho::Base.client.download_file(zoho_sushi.module_name, file_data.id)
             return if file.nil?
-            if file.is_a?(HTTParty::Response) && file.dig('response', 'error', 'code') == '4421'
+            if file.is_a?(HTTParty::Response) && file.respond_to?(:dig) && file.dig('response', 'error', 'code') == '4421'
               hold_process until past_midnight?
             end
             Utils::SalesForce::Client.instance.create('Attachment',

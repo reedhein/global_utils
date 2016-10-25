@@ -1,7 +1,7 @@
 require 'thread'
 
 class WorkerPool
-  WAIT_TIMEOUT = 1 # 1 second
+  WAIT_TIMEOUT = 0.1 # 1 tenth second
   include Singleton
   attr_accessor :tasks, :workers
 
@@ -12,7 +12,6 @@ class WorkerPool
     Signal.trap('INT') do
       @interrupted = true
       finish
-
       exit 0
     end
 
@@ -22,6 +21,7 @@ class WorkerPool
         begin
           loop do
             wait_for_tasks
+            puts 'found task'
             if @tasks.empty? or @interrupted
               break
             end
@@ -31,9 +31,13 @@ class WorkerPool
             end
           end
         rescue ThreadError => e
+          ap e.backtrace
           puts e.inspect
+          sleep 5
           binding.pry
         rescue => e
+          ap e.backtrace
+          sleep 5
           puts e.inspect
         end
       end
@@ -48,12 +52,12 @@ class WorkerPool
     @workers.map(&:join)
   end
 
-private
+  private
 
   def wait_for_tasks
-    while @tasks.length == 0 do
+    while @tasks.length < 1 do
       sleep WAIT_TIMEOUT
     end
-    puts 'breaking out'
+    puts @workers.inspect
   end
 end
